@@ -36,11 +36,11 @@ import { fetchNoteById } from '../../../lib/api';
 import NoteDetailsClient from './NoteDetails.client';
 
 type NoteDetailsProps = {
-  params: { id: string };
+    params: Promise<{ id: string }>;
 };
 
-const NoteDetails = async ({ params }: NoteDetailsProps) => {
-  const { id } =  params;
+export default async function NoteDetails({ params }: NoteDetailsProps) {
+  const { id } = await params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -53,6 +53,4 @@ const NoteDetails = async ({ params }: NoteDetailsProps) => {
       <NoteDetailsClient />
     </HydrationBoundary>
   );
-};
-
-export default NoteDetails;
+}
