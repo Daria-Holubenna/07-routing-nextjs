@@ -7,11 +7,11 @@ import { fetchNoteById } from '@/lib/api';
 // import NoteDetailsClient from '@/app/notes/[id]/NoteDetails.client';
 import NotePreview from './NotePreview.client';
 type NoteDetailsProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-const NoteDetails = async ({ params }: NoteDetailsProps) => {
-  const { id } = params;
+export default async function NoteDetails({ params }: NoteDetailsProps) {
+  const { id } = await params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -21,10 +21,7 @@ const NoteDetails = async ({ params }: NoteDetailsProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* <NoteDetailsClient /> */}
-      <NotePreview/>
+      <NotePreview />
     </HydrationBoundary>
   );
-};
-
-export default NoteDetails;
+}
