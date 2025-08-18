@@ -45,7 +45,7 @@ export default async function NotesByTags({ params }: NotesByTagsProps){
   const search = '';
   const perPage = 12;
   
-  const tag = slug?.[0] === 'all' ? undefined : slug?.[0];
+  const tag = slug?.[0] === 'All' ? undefined : slug?.[0];
 
   const queryClient = new QueryClient();
 
