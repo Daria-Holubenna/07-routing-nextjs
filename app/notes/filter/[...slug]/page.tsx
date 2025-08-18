@@ -35,15 +35,17 @@ import { NoteHttpResp } from '../../../../lib/api';
 import NotesClient from './Notes.client';
 
 type NotesByTagsProps = {
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 };
 
 export default async function NotesByTags({ params }: NotesByTagsProps){
-  const { slug } = params;
-  const tag = slug?.[0] === 'All' ? undefined : slug?.[0];
+  const { slug } = await params;
+
   const page = 1;
   const search = '';
   const perPage = 12;
+  
+  const tag = slug?.[0] === 'all' ? undefined : slug?.[0];
 
   const queryClient = new QueryClient();
 
