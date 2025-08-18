@@ -41,3 +41,16 @@
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+.close {
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    margin: 9px;
+  color: black;
+font-size: 20px;
+}

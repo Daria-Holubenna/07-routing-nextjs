@@ -1,68 +1,60 @@
-// import NoteList from '@/components/NoteList/NoteList';
-// import { getTag } from '@/lib/api';
-// type Props = {
-//   params: Promise<{ slug: string[] }>;
-// };
+// import { fetchNotes } from '../../../../lib/api';
+// import { NoteHttpResp } from '../../../../lib/api';
+// import NotesClient from './Notes.client';
 
-// export default async function NotesByCategory({ params }: Props) {
-//   const { slug } = await params;
-//   const category = slug[0] === 'all' ? undefined : slug[0];
-//   const response = await getTag(category);
-
-//   return (
-//     <div>
-//       <h1>Note List</h1>
-//       {response?.notes?.length > 0 && <NoteList notes={response.notes} />}
-//     </div>
-//   );
+// type NotesByTagsProps ={
+//   params: Promise<{slug?: string[]}>;
 // }
 
-import NoteList from '@/components/NoteList/NoteList';
-import { getTag } from '@/lib/api';
-import type Note from '@/types/note';
-import type { CategoriesHttpResp } from '@/lib/api';
+// const NotesByTags = async ({ params }: NotesByTagsProps) => {
+//   const { slug } = await params;
+//   const category = slug?.[0] === 'All' ? undefined : slug?.[0];
+// const page = 1;
+// const search = '';
+// const perPage = 12;
+//   const initialData: NoteHttpResp = await fetchNotes({
+//    search,
+//   page,
+//   perPage,
+//   category,
+//   });
 
-type Props = {
-  params: Promise<{ slug: string[] }>;
+//   return (<NotesClient initialData={initialData} category={category}/>);
+// };
+
+// export default NotesByTags;
+
+
+import {
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from '@tanstack/react-query';
+import { fetchNotes } from '../../../../lib/api';
+import { NoteHttpResp } from '../../../../lib/api';
+import NotesClient from './Notes.client';
+
+type NotesByTagsProps = {
+  params: { slug?: string[] };
 };
 
-export default async function NotesByCategory({ params }: Props) {
-  const { slug } = await params;
-  const category = slug[0] === 'all' ? undefined : slug[0];
+export default async function NotesByTags({ params }: NotesByTagsProps){
+  const { slug } = params;
+  const tag = slug?.[0] === 'All' ? undefined : slug?.[0];
+  const page = 1;
+  const search = '';
+  const perPage = 12;
 
-  let notesToDisplay: Note[] = [];
+  const queryClient = new QueryClient();
 
-  try {
-    const response: CategoriesHttpResp = await getTag(category);
-    
-    // Перевіряємо, чи отримали дані та чи є вони масивом
-    if (response && Array.isArray(response.notes)) {
-      notesToDisplay = response.notes;
-    }
-  } catch (error) {
-    console.error('Failed to fetch notes:', error);
-    return (
-      <div>
-        <h1>Note List</h1>
-        <p>Something went wrong while fetching notes. Please try again later.</p>
-      </div>
-    );
-  }
+  const initialData: NoteHttpResp = await queryClient.fetchQuery({
+    queryKey: ['notes', search, page, perPage, tag],
+    queryFn: () => fetchNotes(search, page, perPage, tag),
+  });
 
-  if (notesToDisplay.length > 0) {
-    return (
-      <div>
-        <h1>Note List</h1>
-        <NoteList notes={notesToDisplay} />
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <h1>Note List</h1>
-        <p>No notes found for this category.</p>
-      </div>
-    );
-  }
-}
-
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NotesClient initialData={initialData} tag={tag} />
+    </HydrationBoundary>
+  );
+};

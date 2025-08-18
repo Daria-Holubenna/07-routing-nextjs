@@ -7,9 +7,10 @@ export interface NoteHttpResp {
   totalPages: number;
 }
 export async function fetchNotes(
-  search: string,
+  search?: string,
   page: number = 1,
-  perPage: number = 12
+  perPage: number = 12,
+  tag?: string,
 ): Promise<NoteHttpResp> {
   const { data } = await axios.get<NoteHttpResp>(
     'https://notehub-public.goit.study/api/notes',
@@ -18,6 +19,7 @@ export async function fetchNotes(
         search,
         page,
         perPage,
+        tag,
       },
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -32,6 +34,14 @@ export interface NoteTag {
   tag: TagType;
 }
 export type TagType = 'Todo' | 'Work' | 'Shopping' | 'Personal' | 'Meeting';
+export const tagTypeArr = [
+  'All',
+  'Todo',
+  'Work',
+  'Shopping',
+  'Personal',
+  'Meeting',
+];
 export const createNote = async (noteData: NoteTag): Promise<Note> => {
   const { data } = await axios.post<Note>(
     'https://notehub-public.goit.study/api/notes',
@@ -66,8 +76,60 @@ export const fetchNoteById = async (NoteId: string): Promise<Note> => {
   );
   return data;
 };
+type Tag = {
+  id: string,
+  name: string,
+  description: string,
+  createdAt: string,
+  updateAt: string,
+}
+export const getTag = async ()=>{
+  const {data} = await axios<Tag[]>(`https://notehub-public.goit.study/api/notes`,
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
+  );
+  return data;
+};
+// export const getTag = async (id: string): Promise<Note> => {
+//   const { data } = await axios.get<Note>(
+//     `https://notehub-public.goit.study/api/notes/${id}`,
+//     {
+//       headers: {
+//         Authorization: `Bearer ${apiKey}`,
+//       },
+//     }
+//   );
+//   return data;
+// };
 
-// export const getCategories = async () => {
+
+
+
+// export const getTag = async (): Promise<TagType[]> => {
+//   const { data } = await axios<NoteHttpResp>(
+//     `https://notehub-public.goit.study/api/notes`,
+//     {
+//       headers: {
+//         Authorization: `Bearer ${apiKey}`,
+//       },
+//     }
+//   );
+
+//   if (!data.notes || !Array.isArray(data.notes)) {
+//     console.error("API did not return an array of notes.");
+//     return [];
+//   }
+
+//   const categories = data.notes.map(note => note.tag);
+//   const oneOfCategories = Array.from(new Set(categories));
+
+//   return oneOfCategories as TagType[];
+// };
+
+// export const getTag = async () => {
 //   const { data } = await axios<Note[]>(
 //     `https://notehub-public.goit.study/api/notes/categories`,
 //     {
@@ -82,24 +144,23 @@ export const fetchNoteById = async (NoteId: string): Promise<Note> => {
 // export interface CategoriesHttpResp {
 //   notes: Note[];
 // }
-export interface CategoriesHttpResp {
-  notes: Note[]; 
-}
+// export interface CategoriesHttpResp {
+//   notes: Note[];
+// }
 
-export const getTag = async (tagId: string) => {
-  const { data } = await axios<CategoriesHttpResp>(
-    `https://notehub-public.goit.study/api/notes`,
-    {
-      params: { tagId },
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    }
-  );
-  console.log(data, 'data tag')
-  return data;
-};
-
+// export const getTag = async (tagId: string) => {
+//   const { data } = await axios<CategoriesHttpResp>(
+//     `https://notehub-public.goit.study/api/notes`,
+//     {
+//       params: { tagId },
+//       headers: {
+//         Authorization: `Bearer ${apiKey}`,
+//       },
+//     }
+//   );
+//   console.log(data, 'data tag')
+//   return data;
+// };
 
 // export const getCategories = async (categoryId?: string) => {
 //   const { data } = await axios<Note[]>(

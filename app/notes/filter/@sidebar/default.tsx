@@ -1,20 +1,22 @@
-import { getTag } from "@/lib/api"
-import Link from "next/link"
+// import { getTag } from "@/lib/api"
+import Link from 'next/link';
+import css from './SidebarNotes.module.css';
 
-export default async function NotesSidebar(){
-const categories = await getTag();
-console.log(categories.notes, 'default')
-
-    return (
-        <ul>
-            <li>
-                <Link href={`/notes/filter/all`}>All Notes</Link>
-            </li>
-            {categories.notes.map((category)=>(
-                <li key={category.id}>
-                    <Link href={`notes/filter/${category.id}`}>{category.title}</Link>
-                </li>
-            ))}
-        </ul>
-    );
-};
+export default async function NotesSidebar() {
+  // const categories = await getTag();
+  // console.log(categories, 'default')
+  const tagTypeArr = ['All', 'Todo', 'Work', 'Shopping', 'Personal', 'Meeting'];
+  return (
+    <div>
+      <ul className={css.menuList}>
+        {tagTypeArr.map(tag => (
+          <li key={tag}>
+            <Link href={`/notes/filter/${tag}`} className={css.menuLink}>
+              {tag}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

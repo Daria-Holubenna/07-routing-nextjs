@@ -1,21 +1,74 @@
+// import { createPortal } from "react-dom";
+// import css from "./Modal.module.css";
+// import { useEffect, type ReactNode } from "react";
+// import { useRouter } from "next/navigation";
+
+// interface ModalProps {
+//   children: ReactNode;
+//   close: () => void;
+// }
+
+// export default function Modal({ children, close }: ModalProps) {
+//   const router = useRouter();
+//   close = ()=> router.back();
+
+//   useEffect(() => {
+//     const handleKeyDown = (event: KeyboardEvent) => {
+//       if (event.key === "Escape") {
+//         // closeWindow();
+//         close();
+//       }
+//     };
+//     document.addEventListener("keydown", handleKeyDown);
+//     return () => {
+//       document.removeEventListener("keydown", handleKeyDown);
+//     };
+//   }, [close]);
+
+//   useEffect(() => {
+//     document.body.classList.add("no-scroll");
+//     return () => {
+//       document.body.classList.remove("no-scroll");
+//     };
+//   }, []);
+
+//   const handleBackdropClick = (e: React.MouseEvent) => {
+//     if (e.target === e.currentTarget) {
+//       // closeWindow();
+//       close();
+//     }
+//   };
+//   const handleContentClick = (e: React.MouseEvent) => {
+//     e.stopPropagation();
+//   };
+
+//   return createPortal(
+//     <div
+//       className={css.backdrop}
+//       onClick={handleBackdropClick}
+//       role="dialog"
+//       aria-modal="true"
+//     >
+//       <div className={css.modal} onClick={handleContentClick}>
+//         {children}
+//       </div>
+//     </div>,
+//     document.body
+//   );
+// }
 import { createPortal } from "react-dom";
 import css from "./Modal.module.css";
 import { useEffect, type ReactNode } from "react";
-import { useRouter } from "next/router";
 
 interface ModalProps {
   children: ReactNode;
-  close?: () => void;
+  close: () => void;
 }
 
 export default function Modal({ children, close }: ModalProps) {
-  const router = useRouter();
-  close = ()=> router.back();
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        // closeWindow();
         close();
       }
     };
@@ -34,12 +87,8 @@ export default function Modal({ children, close }: ModalProps) {
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      // closeWindow();
       close();
     }
-  };
-  const handleContentClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
   };
 
   return createPortal(
@@ -49,10 +98,13 @@ export default function Modal({ children, close }: ModalProps) {
       role="dialog"
       aria-modal="true"
     >
-      <div className={css.modal} onClick={handleContentClick}>
+      <div className={css.modal}>
+        <button className={css.close} onClick={close}>
+        &times;
+        </button>
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

@@ -2,20 +2,16 @@
 import css from './NoteDetails.module.css';
 import { fetchNoteById } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Loading from '@/app/loading';
-import { useRouter } from 'next/router';
-
 type Params = {
   id: string;
 };
 
-
-
 export default function NoteDetailsClient() {
-   const params: Params = useParams();
-   const router = useRouter();
-const { id } = params;
+  const params: Params = useParams();
+  const router = useRouter();
+  const { id } = params;
   const {
     data: note,
     isPending,
@@ -26,17 +22,17 @@ const { id } = params;
     refetchOnMount: false,
     enabled: !!id,
   });
-  const handleGoBack = ()=>{
-    const isSure = confirm('Are you sure?');
-    if(isSure){
+  const handleGoBack = () => {
+    const isSure = window.confirm('Are you sure?');
+    if (isSure) {
       router.back();
     }
-  }
+  };
   return (
-       <>
-       <button onClick={handleGoBack}>Back</button>
+    <>
+      <button onClick={handleGoBack}>Back</button>
       {isPending && <Loading />}
-        {error && !isPending && <p>Something went wrong.</p>}
+      {error && !isPending && <p>Something went wrong.</p>}
       {note && !isPending && !error && (
         <div className={css.container}>
           <div className={css.item}>
@@ -49,4 +45,5 @@ const { id } = params;
         </div>
       )}
     </>
-)}
+  );
+}

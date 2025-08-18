@@ -1,11 +1,9 @@
 import css from './Header.module.css';
 import Link from 'next/link';
-import { getTag } from '@/lib/api';
 import TagsMenu from '../TagsMenu/TagsMenu';
 
-export default async function Header() {
-  const categories = await getTag();
-  // console.log(categories);
+
+export default function Header() {
   return (
     <header className={css.header}>
       <Link href="/" aria-label="Home">
@@ -17,9 +15,7 @@ export default async function Header() {
             <Link href="/">Home</Link>
           </li>
           <li>
-             {categories && categories.notes && (
-              <TagsMenu categories={categories.notes} />
-            )}
+            <TagsMenu/>
           </li>
           <li>
             <Link href="/profile">Profile</Link>

@@ -1,25 +1,26 @@
 'use client';
 
 import css from './Notes.module.css';
-import Modal from '../../components/Modal/Modal';
-import SearchBox from '../../components/SearchBox/SearchBox';
+import Modal from '../../../../components/Modal/Modal';
+import SearchBox from '../../../../components/SearchBox/SearchBox';
 import { useState } from 'react';
-import NoteList from '../../components/NoteList/NoteList';
+import NoteList from '../../../../components/NoteList/NoteList';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchNotes } from '../../lib/api';
-import NoteForm from '../../components/NoteForm/NoteForm';
+import { fetchNotes } from '../../../../lib/api';
+import NoteForm from '../../../../components/NoteForm/NoteForm';
 import { useDebounce } from 'use-debounce';
-import Pagination from '../../components/Pagination/Pagination';
+import Pagination from '../../../../components/Pagination/Pagination';
 import { Toaster } from 'react-hot-toast';
-import Loading from '../loading';
+import Loading from '../../../loading';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-import { NoteHttpResp } from '../../lib/api';
+import { NoteHttpResp } from '../../../../lib/api';
 
 interface DataProps {
   initialData: NoteHttpResp;
+  tag: string | undefined;
 }
 
-export default function NotesClient({ initialData }: DataProps) {
+export default function NotesClient({ initialData, tag }: DataProps) {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [debouncedSearch] = useDebounce(search, 500);
@@ -33,12 +34,14 @@ export default function NotesClient({ initialData }: DataProps) {
   };
 
   const { data, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ['notes', debouncedSearch, currentPage, itemsPerPage],
-    queryFn: () => fetchNotes(debouncedSearch, currentPage, itemsPerPage),
+    queryKey: ['notes', debouncedSearch, currentPage, itemsPerPage, tag],
+    queryFn: () =>
+      fetchNotes(debouncedSearch, currentPage, itemsPerPage, tag),
     placeholderData: keepPreviousData,
     initialData: initialData,
     //  initialDataUpdatedAt: Date.now(),
   });
+
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
