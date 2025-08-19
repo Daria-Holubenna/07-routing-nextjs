@@ -3,7 +3,7 @@
 import css from './Notes.module.css';
 import Modal from '../../../../components/Modal/Modal';
 import SearchBox from '../../../../components/SearchBox/SearchBox';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import NoteList from '../../../../components/NoteList/NoteList';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchNotes } from '../../../../lib/api';
@@ -18,25 +18,27 @@ import { NoteHttpResp } from '../../../../lib/api';
 interface DataProps {
   initialData: NoteHttpResp;
   tag: string | undefined;
+  perPage: number;
 }
 
-export default function NotesClient({ initialData, tag }: DataProps) {
+export default function NotesClient({ initialData, tag, perPage }: DataProps) {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [debouncedSearch] = useDebounce(search, 500);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
 
   const openModalWindow = () => setShowModal(true);
   const closeModalWindow = () => {
     setShowModal(false);
     setCurrentPage(1);
   };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [tag]);
 
   const { data, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ['notes', debouncedSearch, currentPage, itemsPerPage, tag],
-    queryFn: () =>
-      fetchNotes(debouncedSearch, currentPage, itemsPerPage, tag),
+    queryKey: ['notes', debouncedSearch, currentPage, perPage, tag],
+    queryFn: () => fetchNotes(debouncedSearch, currentPage, perPage, tag),
     placeholderData: keepPreviousData,
     initialData: initialData,
     //  initialDataUpdatedAt: Date.now(),
