@@ -24,7 +24,6 @@
 
 // export default NotesByTags;
 
-
 import {
   QueryClient,
   HydrationBoundary,
@@ -38,13 +37,13 @@ type NotesByTagsProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-export default async function NotesByTags({ params }: NotesByTagsProps){
+export default async function NotesByTags({ params }: NotesByTagsProps) {
   const { slug } = await params;
 
   const page = 1;
   const search = '';
   const perPage = 12;
-  
+  const itemsPerPage = 12;
   const tag = slug?.[0] === 'All' ? undefined : slug?.[0];
 
   const queryClient = new QueryClient();
@@ -56,7 +55,7 @@ export default async function NotesByTags({ params }: NotesByTagsProps){
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotesClient initialData={initialData} tag={tag} />
+      <NotesClient initialData={initialData} tag={tag} perPage={itemsPerPage} />
     </HydrationBoundary>
   );
-};
+}
