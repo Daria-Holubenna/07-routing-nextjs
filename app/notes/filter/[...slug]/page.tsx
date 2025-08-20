@@ -3,7 +3,7 @@ import {
   HydrationBoundary,
   dehydrate,
 } from '@tanstack/react-query';
-import { fetchNotes, TagType } from '@/lib/api';
+import { fetchNotes, TagType, tagTypeArr } from '@/lib/api';
 import NotesClient from './Notes.client';
 
 interface PageProps {
@@ -12,12 +12,22 @@ interface PageProps {
   };
 }
 
+
+function isTagType(tag: string | undefined): tag is TagType {
+  if (!tag) {
+    return false;
+  }
+  return tagTypeArr.slice(1).some(validTag => validTag === tag);
+}
+
 const NotesByTags = async ({ params }: PageProps) => {
   const queryClient = new QueryClient();
   const page = 1;
   const perPage = 12;
 
-  const tag = params?.slug?.[0] === 'all' ? undefined : (params?.slug?.[0] as TagType);
+  const urlTag = params?.slug?.[0];
+
+  const tag = isTagType(urlTag) ? urlTag : undefined;
 
   await queryClient.prefetchQuery({
     queryKey: ['notes', '', page, perPage, tag],
