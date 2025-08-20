@@ -13,20 +13,19 @@ import Pagination from '../../../../components/Pagination/Pagination';
 import { Toaster } from 'react-hot-toast';
 import Loading from '../../../loading';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-import { NoteHttpResp } from '../../../../lib/api';
+import { TagType } from '../../../../lib/api';
 
 interface DataProps {
-  initialData: NoteHttpResp;
-  tag: string | undefined;
-  perPage: number;
+  tag?: TagType | 'All';
 }
 
-export default function NotesClient({ initialData, tag, perPage }: DataProps) {
+export default function NotesClient({ tag }: DataProps) {
+  const itemsPerPage = 12;
+
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [debouncedSearch] = useDebounce(search, 500);
   const [currentPage, setCurrentPage] = useState(1);
-
   const openModalWindow = () => setShowModal(true);
   const closeModalWindow = () => {
     setShowModal(false);
@@ -37,21 +36,30 @@ export default function NotesClient({ initialData, tag, perPage }: DataProps) {
   }, [tag]);
 
   const { data, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ['notes', debouncedSearch, currentPage, perPage, tag],
-    queryFn: () => fetchNotes(debouncedSearch, currentPage, perPage, tag),
+    queryKey: ['notes', debouncedSearch, currentPage, itemsPerPage, tag],
+    queryFn: () =>
+      fetchNotes(
+        debouncedSearch,
+        currentPage,
+        itemsPerPage,
+        tag === 'All' ? undefined : tag
+      ),
     placeholderData: keepPreviousData,
-    initialData: initialData,
-    //  initialDataUpdatedAt: Date.now(),
   });
 
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected + 1);
+  const handlePageClick = (selectedItem: { selected: number } | number) => {
+    if (typeof selectedItem === 'number') {
+        setCurrentPage(selectedItem + 1);
+    } else {
+        setCurrentPage(selectedItem.selected + 1);
+    }
   };
 
   const handleInputChange = (value: string) => {
     setSearch(value);
     setCurrentPage(1);
   };
+
   const notesToDisplay = data?.notes || [];
   const totalPages = data?.totalPages || 0;
 

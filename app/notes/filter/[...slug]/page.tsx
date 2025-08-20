@@ -1,22 +1,32 @@
-import { fetchNotes, NoteHttpResp } from '@/lib/api';
+import {
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from '@tanstack/react-query';
+import { fetchNotes, TagType } from '@/lib/api';
 import NotesClient from './Notes.client';
-type Props = {
-  params: Promise<{ slug?: string[] }>;
+
+type NotesByTagsProps = {
+  params: { slug?: string[] };
 };
 
-export default async function NotesByTags({ params }: Props) {
-  const { slug } = await params;
+export default async function NotesByTags({ params }: NotesByTagsProps) {
+  const queryClient = new QueryClient();
   const page = 1;
-  const search = '';
   const perPage = 12;
 
-  const tag = slug?.[0] === 'All' ? undefined : slug?.[0];
+  const tag = params?.slug?.[0] === 'All' ? undefined : params?.slug?.[0];
 
-  const initialData: NoteHttpResp = await fetchNotes(
-    search,
-    page,
-    perPage,
-    tag
+  await queryClient.prefetchQuery({
+    queryKey: ['notes', '', page, perPage, tag],
+    queryFn: () => fetchNotes('', page, perPage, tag as TagType),
+  });
+
+  const dehydratedState = dehydrate(queryClient);
+
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <NotesClient tag={tag as TagType} />
+    </HydrationBoundary>
   );
-  return <NotesClient initialData={initialData} tag={tag} perPage={perPage} />;
 }
