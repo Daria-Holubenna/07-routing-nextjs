@@ -8,7 +8,7 @@ import NotesClient from './Notes.client';
 
 interface PageProps {
   params: {
-    slug?: string[] | undefined;
+    slug?: string[];
   };
 }
 
@@ -17,7 +17,7 @@ const NotesByTags = async ({ params }: PageProps) => {
   const page = 1;
   const perPage = 12;
 
-  const tag = params?.slug?.[0] === 'all' ? undefined : (params?.slug?.[0] as TagType | undefined);
+  const tag = params?.slug?.[0] === 'all' ? undefined : (params?.slug?.[0] as TagType);
 
   await queryClient.prefetchQuery({
     queryKey: ['notes', '', page, perPage, tag],
