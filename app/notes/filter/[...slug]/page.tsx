@@ -8,7 +8,7 @@ import NotesClient from './Notes.client';
 
 interface PageProps {
   params: {
-    slug?: string[];
+    slug?: string[] | undefined;
   };
 }
 
