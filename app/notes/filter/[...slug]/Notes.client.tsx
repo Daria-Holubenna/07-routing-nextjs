@@ -6,14 +6,13 @@ import SearchBox from '../../../../components/SearchBox/SearchBox';
 import { useState, useEffect } from 'react';
 import NoteList from '../../../../components/NoteList/NoteList';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchNotes } from '../../../../lib/api';
+import { fetchNotes, TagType } from '../../../../lib/api';
 import NoteForm from '../../../../components/NoteForm/NoteForm';
 import { useDebounce } from 'use-debounce';
 import Pagination from '../../../../components/Pagination/Pagination';
 import { Toaster } from 'react-hot-toast';
 import Loading from '../../../loading';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-import { TagType } from '../../../../lib/api';
 
 interface DataProps {
   tag?: TagType | 'All';
@@ -26,11 +25,13 @@ export default function NotesClient({ tag }: DataProps) {
   const [showModal, setShowModal] = useState(false);
   const [debouncedSearch] = useDebounce(search, 500);
   const [currentPage, setCurrentPage] = useState(1);
+
   const openModalWindow = () => setShowModal(true);
   const closeModalWindow = () => {
     setShowModal(false);
     setCurrentPage(1);
   };
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [tag]);

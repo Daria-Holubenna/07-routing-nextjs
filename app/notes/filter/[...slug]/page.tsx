@@ -6,25 +6,26 @@ import {
 import { fetchNotes, TagType } from '@/lib/api';
 import NotesClient from './Notes.client';
 
-interface Props {
-  params: {
-    slug?: string[];
-  };
+interface PageProps {
+  params: { slug?: string[] };
 }
 
-const NotesByTags = async ({ params }: Props) => {
-  const {slug} = await params;
+const NotesByTags = async ({ params }: PageProps) => {
+  const queryClient = new QueryClient();
   const page = 1;
   const perPage = 12;
 
-  const tag =
-    params?.slug?.[0] === 'all'
-      ? undefined
-      : (params?.slug?.[0] as TagType | undefined);
-  const queryClient = new QueryClient();
+  const tag = params?.slug?.[0] === 'all' ? undefined : (params?.slug?.[0] as TagType | undefined);
+
   await queryClient.prefetchQuery({
     queryKey: ['notes', '', page, perPage, tag],
-    queryFn: () => fetchNotes('', page, perPage, tag),
+    queryFn: () =>
+      fetchNotes(
+        '',
+        page,
+        perPage,
+        tag,
+      ),
   });
 
   const dehydratedState = dehydrate(queryClient);
