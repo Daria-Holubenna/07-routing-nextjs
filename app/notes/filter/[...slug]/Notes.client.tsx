@@ -6,7 +6,7 @@ import SearchBox from '../../../../components/SearchBox/SearchBox';
 import { useState, useEffect } from 'react';
 import NoteList from '../../../../components/NoteList/NoteList';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchNotes, TagType } from '../../../../lib/api';
+import { fetchNotes } from '../../../../lib/api';
 import NoteForm from '../../../../components/NoteForm/NoteForm';
 import { useDebounce } from 'use-debounce';
 import Pagination from '../../../../components/Pagination/Pagination';
@@ -15,7 +15,7 @@ import Loading from '../../../loading';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
 
 interface DataProps {
-  tag?: TagType | 'All';
+  tag?: string | undefined;
 }
 
 export default function NotesClient({ tag }: DataProps) {

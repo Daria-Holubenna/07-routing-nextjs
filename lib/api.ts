@@ -26,7 +26,7 @@ export async function fetchNotes(
   search?: string,
   page: number = 1,
   perPage: number = 12,
-  tag?: TagType | 'All',
+  tag?: string,
 ): Promise<NoteHttpResp> {
   const { data } = await axios.get<NoteHttpResp>(
     'https://notehub-public.goit.study/api/notes',
@@ -35,7 +35,7 @@ export async function fetchNotes(
         search,
         page,
         perPage,
-        tag: tag === 'All' ? undefined : tag,
+        ...(tag ? {tag} : {}),
       },
       headers: {
         Authorization: `Bearer ${apiKey}`,
