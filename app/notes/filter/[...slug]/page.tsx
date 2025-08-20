@@ -6,11 +6,11 @@ import {
 import { fetchNotes, TagType } from '@/lib/api';
 import NotesClient from './Notes.client';
 
-interface PageProps {
+interface Props {
   params: { slug?: string[] };
 }
 
-const NotesByTags = async ({ params }: PageProps) => {
+const NotesByTags = async ({ params }: Props) => {
   const queryClient = new QueryClient();
   const page = 1;
   const perPage = 12;
