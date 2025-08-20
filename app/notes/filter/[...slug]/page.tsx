@@ -10,12 +10,14 @@ type NotesByTagsProps = {
   params: { slug?: string[] };
 };
 
+
 export default async function NotesByTags({ params }: NotesByTagsProps) {
   const queryClient = new QueryClient();
   const page = 1;
   const perPage = 12;
 
-  const tag = params?.slug?.[0] === 'all' ? undefined : params?.slug?.[0];
+
+  const tag = params?.slug?.[0] === 'All' ? undefined : params?.slug?.[0];
 
   await queryClient.prefetchQuery({
     queryKey: ['notes', '', page, perPage, tag],
