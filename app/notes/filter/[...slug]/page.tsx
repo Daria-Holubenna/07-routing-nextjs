@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-query';
 
 type Props = {
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 };
 
 
