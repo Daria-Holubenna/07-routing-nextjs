@@ -76,15 +76,19 @@ export const fetchNoteById = async (NoteId: string): Promise<Note> => {
   );
   return data;
 };
-type Tag = {
+export interface CategoriesHttpResp {
+  tags: Tag[];
+}
+export type Tag = {
   id: string,
   name: string,
   description: string,
   createdAt: string,
   updateAt: string,
 }
-export const getTag = async ()=>{
-  const {data} = await axios<Tag[]>(`https://notehub-public.goit.study/api/notes`,
+
+export const getTag = async (): Promise<CategoriesHttpResp>=>{
+  const {data} = await axios<CategoriesHttpResp>(`https://notehub-public.goit.study/api/tags`,
     {
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -93,84 +97,3 @@ export const getTag = async ()=>{
   );
   return data;
 };
-// export const getTag = async (id: string): Promise<Note> => {
-//   const { data } = await axios.get<Note>(
-//     `https://notehub-public.goit.study/api/notes/${id}`,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${apiKey}`,
-//       },
-//     }
-//   );
-//   return data;
-// };
-
-
-
-
-// export const getTag = async (): Promise<TagType[]> => {
-//   const { data } = await axios<NoteHttpResp>(
-//     `https://notehub-public.goit.study/api/notes`,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${apiKey}`,
-//       },
-//     }
-//   );
-
-//   if (!data.notes || !Array.isArray(data.notes)) {
-//     console.error("API did not return an array of notes.");
-//     return [];
-//   }
-
-//   const categories = data.notes.map(note => note.tag);
-//   const oneOfCategories = Array.from(new Set(categories));
-
-//   return oneOfCategories as TagType[];
-// };
-
-// export const getTag = async () => {
-//   const { data } = await axios<Note[]>(
-//     `https://notehub-public.goit.study/api/notes/categories`,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${apiKey}`,
-//       },
-//     }
-//   );
-//   return data;
-// };
-
-// export interface CategoriesHttpResp {
-//   notes: Note[];
-// }
-// export interface CategoriesHttpResp {
-//   notes: Note[];
-// }
-
-// export const getTag = async (tagId: string) => {
-//   const { data } = await axios<CategoriesHttpResp>(
-//     `https://notehub-public.goit.study/api/notes`,
-//     {
-//       params: { tagId },
-//       headers: {
-//         Authorization: `Bearer ${apiKey}`,
-//       },
-//     }
-//   );
-//   console.log(data, 'data tag')
-//   return data;
-// };
-
-// export const getCategories = async (categoryId?: string) => {
-//   const { data } = await axios<Note[]>(
-//     `https://notehub-public.goit.study/api/notes`,
-//     {
-//       params: { categoryId },
-//       headers: {
-//         Authorization: `Bearer ${apiKey}`,
-//       },
-//     }
-//   );
-//   return data;
-// };
