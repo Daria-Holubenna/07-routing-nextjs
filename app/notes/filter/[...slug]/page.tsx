@@ -10,24 +10,18 @@ type NotesByTagsProps = {
   params: { slug?: string[] };
 };
 
-
-export default async function NotesByTags({ params }: NotesByTagsProps) {
+const NotesByTags = async ({ params }: NotesByTagsProps) => {
   const queryClient = new QueryClient();
   const page = 1;
   const perPage = 12;
-
-
-  const tag = params?.slug?.[0] === 'All' ? undefined : params?.slug?.[0];
+  const tag =
+    params?.slug?.[0] === 'all'
+      ? undefined
+      : (params?.slug?.[0] as TagType | undefined);
 
   await queryClient.prefetchQuery({
     queryKey: ['notes', '', page, perPage, tag],
-    queryFn: () =>
-      fetchNotes(
-        '',
-        page,
-        perPage,
-        tag as TagType,
-      ),
+    queryFn: () => fetchNotes('', page, perPage, tag as TagType),
   });
 
   const dehydratedState = dehydrate(queryClient);
@@ -37,4 +31,6 @@ export default async function NotesByTags({ params }: NotesByTagsProps) {
       <NotesClient tag={tag as TagType} />
     </HydrationBoundary>
   );
-}
+};
+
+export default NotesByTags;
